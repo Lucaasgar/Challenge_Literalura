@@ -1,35 +1,56 @@
 package com.challenge.LiterAlura.Model;
 
-import com.challenge.LiterAlura.Model.Autor;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "libros")
 public class Libro {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String titulo;
-    private List<Autor> listaAutores;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "autores_libros",
+            joinColumns = @JoinColumn(name = "libro_id"),
+            inverseJoinColumns = @JoinColumn(name = "autor_id")
+    )
+    private List<Autor> autores;
+    @Column(columnDefinition = "TEXT")
     private String sinopsis;
     private List<String> lenguaje;
+    private Integer nroDescargas;
 
-    public Libro(DatosLibro datosLibro, Autor autor){
+    public Libro(){}
+
+    public Libro(DatosLibro datosLibro){
         this.titulo = datosLibro.titulo();
         this.lenguaje = datosLibro.lenguaje();
         this.sinopsis = String.valueOf(datosLibro.sinopsis());
-        this.listaAutores = new ArrayList<>();
+        this.autores = new ArrayList<>();
+        this.nroDescargas = datosLibro.nroDescargas();
     }
 
     @Override
     public String toString() {
         return "Libro{" +
                 "titulo='" + titulo + '\'' +
-                ", autores=" + listaAutores +
+                ", listaAutores=" + autores +
                 ", sinopsis='" + sinopsis + '\'' +
                 ", lenguaje=" + lenguaje +
+                ", nroDescargas=" + nroDescargas +
                 '}';
     }
 
+    public List<Autor> getListaAutores() {
+        return autores;
+    }
+
     public void setListaAutores(List<Autor> autores){
-        this.listaAutores = autores;
+        this.autores = autores;
     }
     public String getTitulo() {
         return titulo;
@@ -40,7 +61,7 @@ public class Libro {
     }
 
     public List<Autor> getAutor() {
-        return listaAutores;
+        return autores;
     }
 
     public String getSinopsis() {

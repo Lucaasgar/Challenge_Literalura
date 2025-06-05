@@ -1,11 +1,21 @@
 package com.challenge.LiterAlura.Model;
 
-import java.util.List;
+import jakarta.persistence.*;
 
+import java.util.List;
+@Entity
+@Table(name = "autores")
 public class Autor {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String nombre;
     private Integer fecha_nac;
     private Integer fecha_def;
+    @ManyToMany(mappedBy = "autores")
+    private List<Libro> libros;
+
+    public Autor(){}
 
     public Autor(DatosAutor datosAutor){
         this.nombre = datosAutor.nombre();
