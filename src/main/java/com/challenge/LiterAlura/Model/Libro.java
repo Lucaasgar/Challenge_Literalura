@@ -1,6 +1,7 @@
 package com.challenge.LiterAlura.Model;
 
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +10,7 @@ import java.util.List;
 @Table(name = "libros")
 public class Libro {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long isnb;
     private String titulo;
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -31,22 +31,42 @@ public class Libro {
         this.lenguaje = datosLibro.lenguaje();
         this.sinopsis = String.valueOf(datosLibro.sinopsis());
         this.autores = new ArrayList<>();
+        this.isnb = datosLibro.id();
         this.nroDescargas = datosLibro.nroDescargas();
     }
 
     @Override
     public String toString() {
-        return "Libro{" +
-                "titulo='" + titulo + '\'' +
-                ", listaAutores=" + autores +
-                ", sinopsis='" + sinopsis + '\'' +
-                ", lenguaje=" + lenguaje +
-                ", nroDescargas=" + nroDescargas +
-                '}';
+        return "\n------- LIBRO -------\n"+
+                "TÍTULO: " + titulo + "\n" +
+                "AUTOR: " + autores.get(0).getNombre() + "\n" +
+                "IDIOMA: " + lenguaje + "\n" +
+                "DESCARGAS: " + nroDescargas + "\n" +
+                "---------------------\n";
     }
 
-    public List<Autor> getListaAutores() {
+    public Long getIsnb() {
+        return isnb;
+    }
+
+    public void setIsnb(Long isnb) {
+        this.isnb = isnb;
+    }
+
+    public List<Autor> getAutores() {
         return autores;
+    }
+
+    public void setAutores(List<Autor> autores) {
+        this.autores = autores;
+    }
+
+    public Integer getNroDescargas() {
+        return nroDescargas;
+    }
+
+    public void setNroDescargas(Integer nroDescargas) {
+        this.nroDescargas = nroDescargas;
     }
 
     public void setListaAutores(List<Autor> autores){
@@ -58,10 +78,6 @@ public class Libro {
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
-    }
-
-    public List<Autor> getAutor() {
-        return autores;
     }
 
     public String getSinopsis() {
